@@ -26,7 +26,6 @@ phpunit.phar
 # local phpunit config
 /phpunit.xml
 
-/config/cache.php
-/config/db.php
+/config/app.php
 runtime/*
 /web/storage

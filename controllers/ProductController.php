@@ -8,6 +8,8 @@ use app\models\ProductSearcha;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use app\models\Category;
+use yii\helpers\ArrayHelper;
 
 /**
  * ProductController implements the CRUD actions for Product model.
@@ -70,6 +72,7 @@ class ProductController extends Controller
         } else {
             return $this->render('create', [
                 'model' => $model,
+                'categories' => Category::getAsArray(),
             ]);
         }
     }
@@ -89,6 +92,7 @@ class ProductController extends Controller
         } else {
             return $this->render('update', [
                 'model' => $model,
+                'categories' => Category::getAsArray(),
             ]);
         }
     }

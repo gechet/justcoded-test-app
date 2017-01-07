@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "{{%product}}".
@@ -16,10 +17,17 @@ use Yii;
  * @property string $description
  *
  * @property Photo[] $photos
+ * @property Category[] $categories
  * @property ProductToCategory[] $productToCategories
  */
 class Product extends \yii\db\ActiveRecord
 {
+    /**
+     * Array of selected categories
+     * @var array
+     */
+    public $category;
+
     /**
      * @inheritdoc
      */
@@ -39,7 +47,33 @@ class Product extends \yii\db\ActiveRecord
             [['price', 'sale_price'], 'number'],
             [['description'], 'string'],
             [['title'], 'string', 'max' => 255],
+            ['category', 'each', 'rule' => ['integer']],
         ];
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function afterSave($insert, $changedAttributes)
+    {
+        if ($this->category) {
+            ProductToCategory::deleteAll(['product_id' => $this->id]);
+            foreach ($this->category as $categoryId) {
+                (new ProductToCategory([
+                    'product_id' => $this->id, 
+                    'category_id' => $categoryId
+                ]))->save();
+            }
+        }
+        parent::afterSave($insert, $changedAttributes);
     }
 
     /**
@@ -72,5 +106,13 @@ class Product extends \yii\db\ActiveRecord
     public function getProductToCategories()
     {
         return $this->hasMany(ProductToCategory::className(), ['product_id' => 'id']);
+    }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCategories()
+    {
+        return $this->hasMany(Category::className(), ['id' => 'category_id'])->via('productToCategories');
     }
 }

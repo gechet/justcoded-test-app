@@ -2,10 +2,13 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use kartik\select2\Select2;
+use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Product */
 /* @var $form yii\widgets\ActiveForm */
+$model->category = ArrayHelper::getColumn($model->categories, 'id');
 ?>
 
 <div class="product-form">
@@ -21,6 +24,13 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'sale_price')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'sale_qty')->textInput() ?>
+    
+    <?= $form->field($model, 'category')->widget(Select2::className(), [
+        'data' => $categories,
+        'options' => [
+            'multiple' => true,
+        ],
+    ]) ?>
 
     <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 

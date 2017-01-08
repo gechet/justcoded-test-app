@@ -56,11 +56,20 @@ class Category extends \yii\db\ActiveRecord
         return $this->hasMany(ProductToCategory::className(), ['category_id' => 'id']);
     }
     
+    /**
+     * Wrapper for model
+     * @return array
+     */
     public function getPossibleParentCategories()
     {
         return self::getAsArray($this->id);
     }
     
+    /**
+     * Get array of categories
+     * @param integer|array $exclude ids that we should exclude from result query
+     * @return array
+     */
     public static function getAsArray($exclude = null)
     {
         $data = self::find()->select(['id', 'name'])->asArray();

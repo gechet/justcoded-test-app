@@ -13,7 +13,7 @@ $model->category = ArrayHelper::getColumn($model->categories, 'id');
 
 <div class="product-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
@@ -32,6 +32,14 @@ $model->category = ArrayHelper::getColumn($model->categories, 'id');
         ],
     ]) ?>
 
+    <?php if (!$model->isNewRecord && $model->photos) { ?>
+        <?php foreach ($model->photos as $photo) { ?>
+    <img src="<?= \app\models\Photo::STORAGE_PATH . $photo->file ?>">
+        <?php } ?>
+    <?php } ?>
+    
+    <?= $form->field($model, 'photo[]')->fileInput(['multiple' => true, 'accept' => 'image/*']) ?>
+    
     <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 
     <div class="form-group">

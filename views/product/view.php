@@ -35,6 +35,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'sale_price',
             'sale_qty',
             'description:ntext',
+            [
+                'attribute' => 'category',
+                'value' => $model->categoryRow,
+                'format' => 'raw',
+            ],
         ],
     ]) ?>
 

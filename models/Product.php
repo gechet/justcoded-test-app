@@ -4,6 +4,8 @@ namespace app\models;
 
 use Yii;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
+use yii\helpers\Html;
 
 /**
  * This is the model class for table "{{%product}}".
@@ -27,6 +29,11 @@ class Product extends \yii\db\ActiveRecord
      * @var array
      */
     public $category;
+    /**
+     * Array of uploaded files
+     * @var mixed 
+     */
+    public $photo;
 
     /**
      * @inheritdoc
@@ -48,15 +55,8 @@ class Product extends \yii\db\ActiveRecord
             [['description'], 'string'],
             [['title'], 'string', 'max' => 255],
             ['category', 'each', 'rule' => ['integer']],
+            ['photo', 'file', 'maxFiles' => 0],
         ];
-    }
-    
-    /**
-     * @inheritdoc
-     */
-    public function init()
-    {
-        parent::init();
     }
     
     /**
@@ -72,6 +72,9 @@ class Product extends \yii\db\ActiveRecord
                     'category_id' => $categoryId
                 ]))->save();
             }
+        }
+        if ($this->photo) {
+            Photo::savePhoto($this->photo, $this->id);
         }
         parent::afterSave($insert, $changedAttributes);
     }
@@ -99,6 +102,26 @@ class Product extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Photo::className(), ['product_id' => 'id']);
     }
+    
+    /**
+     * Returns array of products images
+     * @param boolean $absolute
+     * @return array
+     */
+    public function getPhotoUrls($absolute = true)
+    {
+        if ($this->photos) {
+            return array_map(function ($file) use ($absolute) {
+                $url = '';
+                if ($absolute) {
+                    $url .= Url::base(true);
+                }
+                $url .= Photo::STORAGE_PATH . $file;
+                return $file;
+            }, ArrayHelper::getColumn($this->photos, 'file'));
+        }
+        return [];
+    }
 
     /**
      * @return \yii\db\ActiveQuery
@@ -114,5 +137,20 @@ class Product extends \yii\db\ActiveRecord
     public function getCategories()
     {
         return $this->hasMany(Category::className(), ['id' => 'category_id'])->via('productToCategories');
+    }
+    
+    /**
+     * Format row with links to connected categories
+     * @return string
+     */
+    public function getCategoryRow()
+    {
+        $row = [];
+        if ($this->categories) {
+            foreach ($this->categories as $category) {
+                $row[] = Html::a($category->name, ['/category/view', 'id' => $category->id]);
+            }
+        }
+        return implode(', ', $row);
     }
 }

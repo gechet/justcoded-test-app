@@ -59,6 +59,14 @@ class Product extends \yii\db\ActiveRecord
         ];
     }
     
+    public function fields()
+    {
+        return parent::fields() + [
+            'categories',
+            'photoUrls',
+        ];
+    }
+    
     /**
      * @inheritdoc
      */
@@ -112,12 +120,7 @@ class Product extends \yii\db\ActiveRecord
     {
         if ($this->photos) {
             return array_map(function ($file) use ($absolute) {
-                $url = '';
-                if ($absolute) {
-                    $url .= Url::base(true);
-                }
-                $url .= Photo::STORAGE_PATH . $file;
-                return $file;
+                return Url::to(Photo::STORAGE_PATH . $file, $absolute);
             }, ArrayHelper::getColumn($this->photos, 'file'));
         }
         return [];

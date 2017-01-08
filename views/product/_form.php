@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use kartik\select2\Select2;
 use yii\helpers\ArrayHelper;
+use app\models\Photo;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Product */
@@ -33,9 +34,15 @@ $model->category = ArrayHelper::getColumn($model->categories, 'id');
     ]) ?>
 
     <?php if (!$model->isNewRecord && $model->photos) { ?>
+    <div class="row">
         <?php foreach ($model->photos as $photo) { ?>
-    <img src="<?= \app\models\Photo::STORAGE_PATH . $photo->file ?>">
+        <div class="col-md-4">
+            <div class="thumbnail">
+                <img src="<?= Photo::STORAGE_PATH . $photo->file ?>">
+            </div>
+        </div>
         <?php } ?>
+    </div>
     <?php } ?>
     
     <?= $form->field($model, 'photo[]')->fileInput(['multiple' => true, 'accept' => 'image/*']) ?>

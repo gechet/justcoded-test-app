@@ -10,6 +10,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use app\models\Category;
 use yii\web\UploadedFile;
+use app\models\Photo;
 
 /**
  * ProductController implements the CRUD actions for Product model.
@@ -26,6 +27,7 @@ class ProductController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                    'delete-image' => ['POST'],
                 ],
             ],
         ];
@@ -115,6 +117,17 @@ class ProductController extends Controller
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+    
+    /**
+     * Deletes product photo
+     * @param integer $id
+     * @return boolean
+     */
+    public function actionDeleteImage($id)
+    {
+        $photo = Photo::findOne($id);
+        return $photo && $photo->delete();
     }
 
     /**

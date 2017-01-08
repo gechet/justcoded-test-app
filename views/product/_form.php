@@ -36,10 +36,15 @@ $model->category = ArrayHelper::getColumn($model->categories, 'id');
     <?php if (!$model->isNewRecord && $model->photos) { ?>
     <div class="row">
         <?php foreach ($model->photos as $photo) { ?>
-        <div class="col-md-4">
+        <div class="col-md-4" data-photoId="<?= $photo->id ?>">
             <div class="thumbnail">
                 <img src="<?= Photo::STORAGE_PATH . $photo->file ?>">
-            </div>
+                <div class="caption">
+                    <span class="j-delete-photo" data-id="<?= $photo->id ?>">
+                        Delete photo
+                    </span>
+                </div>
+            </div>            
         </div>
         <?php } ?>
     </div>

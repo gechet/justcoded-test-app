@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use app\models\Photo;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Product */
@@ -42,5 +43,15 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ],
     ]) ?>
-
+    <?php if ($model->photos) { ?>
+    <div class="row">
+        <?php foreach ($model->photos as $photo) { ?>
+        <div class="col-md-4">
+            <div class="thumbnail">
+                <img src="<?= Photo::STORAGE_PATH . $photo->file ?>">
+            </div>            
+        </div>
+        <?php } ?>
+    </div>
+    <?php } ?>
 </div>
